@@ -28,7 +28,7 @@ class Server {
     this.routes();
 
     // Scrapping
-    this.scrap();
+    // this.scrap();
   }
 
   middleware() {
@@ -38,7 +38,7 @@ class Server {
 
   async database() {
     try {
-      await prisma.$connect()
+      await prisma.$connect();
       console.log("Database online");
       await prisma.$disconnect();
     } catch (error: any) {
@@ -49,7 +49,7 @@ class Server {
   async scrap() {
     // setInterval(async () => {
     //   await scrapping();
-    // }, 60000); // 1 minuto
+    // }, 60000 * 60 * 6);
     await scrapping();
   }
 

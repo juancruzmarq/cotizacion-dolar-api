@@ -1,5 +1,22 @@
+import { Entidad } from "@prisma/client";
 import prisma from "../database/connection";
 import { ErrorService } from "./error.service";
+
+interface Cotizacion {
+  moneda: string;
+  tipo: string;
+  fecha: Date;
+  compra?: number | null;
+  venta: number;
+}
+
+interface EntidadesCotizaciones {
+  [key: string]: {
+    url: string;
+    es_banco: boolean;
+    cotizaciones: Cotizacion[];
+  };
+}
 
 const CotizacionService = {
   getCotizaciones: async () => {
@@ -83,6 +100,43 @@ const CotizacionService = {
       return cotizacion;
     } catch (error: any) {
       return new Error(error);
+    }
+  },
+  getArbolCotizaciones: async () => {
+    try {
+      const cotizaciones = await prisma.cotizacion.findMany({
+        include: { Entidad: true },
+        orderBy: { fecha: "desc" },
+        distinct: ["EntidadId", "tipo"],
+      });
+      const arbolCotizaciones: EntidadesCotizaciones = {};
+
+      for (const cotizacion of cotizaciones) {
+        const entidad = cotizacion.Entidad?.nombre;
+        if (!entidad) {
+          return new Error("No existen cotizaciones");
+        }
+        if (!arbolCotizaciones[entidad]) {
+          arbolCotizaciones[entidad] = {
+            url: cotizacion.Entidad?.url || "",
+            es_banco: cotizacion.Entidad?.es_banco || false,
+            cotizaciones: [],
+          };
+        }
+
+        arbolCotizaciones[entidad].cotizaciones.push({
+          moneda: cotizacion.moneda,
+          tipo: cotizacion.tipo,
+          fecha: cotizacion.fecha,
+          compra: cotizacion.compra,
+          venta: cotizacion.venta,
+        });
+      }
+
+      return arbolCotizaciones;
+    } catch (error) {
+      console.log(error);
+      return new Error("No existen cotizaciones");
     }
   },
 };
