@@ -44,9 +44,20 @@ const createCotizacion = async (req: Request, res: Response) => {
   res.json(cotizacion);
 };
 
+const getArbolCotizaciones = async (req: Request, res: Response) => {
+  const cotizaciones = await CotizacionService.getArbolCotizaciones();
+  if (cotizaciones instanceof Error) {
+    return res.status(404).json({
+      msg: cotizaciones.message,
+    });
+  }
+  res.json(cotizaciones);
+};
+
 export {
   getCotizaciones,
   getCotizacion,
   getCotizacionByEntidad,
   createCotizacion,
+  getArbolCotizaciones,
 };

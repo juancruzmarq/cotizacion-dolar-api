@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createCotizacion,
+  getArbolCotizaciones,
   getCotizacion,
   getCotizacionByEntidad,
   getCotizaciones,
@@ -9,9 +10,10 @@ import {
 const router = Router();
 
 // Rutas de la cotizacion
-router.get("/", getCotizaciones);
-router.get("/:id", getCotizacion);
 router.get("/entidad/:id", getCotizacionByEntidad);
+router.get("/dolar", getArbolCotizaciones);
+router.get("/:id", getCotizacion);
+router.get("/", getCotizaciones);
 router.post("/", createCotizacion);
 
 export default router;
