@@ -1,9 +1,13 @@
-import Entidad from "../models/entidad";
+import { Entidad } from "@prisma/client";
+import prisma from "../database/connection";
 
 const EntidadService = {
   getEntidades: async () => {
     try {
-      const entidades = await Entidad.findAll();
+      const entidades = await prisma.entidad.findMany();
+      if (entidades.length === 0) {
+        return new Error("No existen entidades");
+      }
       return entidades;
     } catch (error) {
       return new Error("No existen entidades");
@@ -11,7 +15,11 @@ const EntidadService = {
   },
   getEntidad: async (id: number) => {
     try {
-      const entidad = await Entidad.findByPk(id);
+      const entidad = await prisma.entidad.findUnique({
+        where: {
+          id: id,
+        },
+      });
       if (!entidad) {
         return new Error(`No existe una entidad con el id ${id}`);
       }
@@ -20,11 +28,11 @@ const EntidadService = {
       return new Error(`No existe una entidad con el id ${id}`);
     }
   },
-  getEntidadByNombre: async (nombre: string) => {
+  getEntidadByNombre: async (nombre: string): Promise<Entidad | Error> => {
     try {
-      const entidad = await Entidad.findOne({
+      const entidad = await prisma.entidad.findFirst({
         where: {
-          nombre,
+          nombre: nombre,
         },
       });
       if (!entidad) {
@@ -37,7 +45,7 @@ const EntidadService = {
   },
   createEntidad: async (body: any) => {
     try {
-      const existeEntidad = await Entidad.findOne({
+      const existeEntidad = await prisma.entidad.findFirst({
         where: {
           nombre: body.nombre,
         },
@@ -45,8 +53,9 @@ const EntidadService = {
       if (existeEntidad) {
         return new Error(`Ya existe una entidad con el nombre ${body.nombre}`);
       }
-      const entidad = Entidad.build(body);
-      await entidad.save();
+      const entidad = await prisma.entidad.create({
+        data: body,
+      });
       return entidad;
     } catch (error: any) {
       return new Error(error);
@@ -54,23 +63,43 @@ const EntidadService = {
   },
   updateEntidad: async (id: number, body: any) => {
     try {
-      const entidad = await Entidad.findByPk(id);
+      const entidad = await prisma.entidad.findUnique({
+        where: {
+          id: id,
+        },
+      });
       if (!entidad) {
         return new Error(`No existe una entidad con el id ${id}`);
       }
-      await entidad.update(body);
-      return entidad;
+      const entidadUpdated = await prisma.entidad.update({
+        where: {
+          id: id,
+        },
+        data: body,
+      });
+      return entidadUpdated;
     } catch (error: any) {
       return new Error(error);
     }
   },
   deleteEntidad: async (id: number) => {
     try {
-      const entidad = await Entidad.findByPk(id);
+      const entidad = await prisma.entidad.findUnique({
+        where: {
+          id: id,
+        },
+      });
       if (!entidad) {
         return new Error(`No existe una entidad con el id ${id}`);
       }
-      await Entidad.update({ activo: false }, { where: { id } });
+      const entidadDeleted = await prisma.entidad.update({
+        where: {
+          id: id,
+        },
+        data: {
+          activo: false,
+        },
+      });
       return entidad;
     } catch (error: any) {
       return new Error(error);

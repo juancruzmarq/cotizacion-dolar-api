@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cotizacion {
+  id        Int      @id @default(autoincrement())
+  moneda    String   @db.VarChar(255)
+  tipo      String   @db.VarChar(255)
+  fecha     DateTime @db.Timestamptz(6)
+  compra    Float?   
+  venta     Float    
+  createdAt DateTime @db.Timestamptz(6) @default(now())
+  updatedAt DateTime @db.Timestamptz(6) @updatedAt
+  EntidadId Int?
+  Entidad   Entidad? @relation(fields: [EntidadId], references: [id])
+}
+
+model Entidad {
+  id         Int          @id @default(autoincrement())
+  nombre     String       @db.VarChar(255) @unique
+  es_banco   Boolean
+  url        String       @db.VarChar(255) @unique
+  activo     Boolean?     @default(true) 
+  createdAt  DateTime?    @default(now())
+  updatedAt  DateTime?    @updatedAt 
+  Cotizacion Cotizacion[]
+  Error      Error[]
+}
+
+model Error {
+  id        Int       @id @default(autoincrement())
+  file      String?   @db.VarChar(255)
+  line      Int?
+  mensaje   String    @db.VarChar(255)
+  moneda    String    @db.VarChar(255)
+  tipo      String    @db.VarChar(255)
+  createdAt DateTime? @default(now())
+  EntidadId Int?
+  Entidad   Entidad?  @relation(fields: [EntidadId], references: [id])
+}

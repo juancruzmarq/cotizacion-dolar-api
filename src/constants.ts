@@ -4,6 +4,10 @@ export const BANCO_NACION = "https://www.bna.com.ar/Personas";
 export const LA_NACION = "https://www.lanacion.com.ar/dolar-hoy/";
 export const AMBITO = "https://www.ambito.com/contenidos/dolar.html";
 export const INFOBAE = "https://www.infobae.com/economia/divisas/dolar-hoy/";
+export const BANCO_MACRO =
+  "https://tiempofinanciero.com.ar/cotizaciones/macro/";
+export const TIEMPO_FINANCIERO =
+  "https://tiempofinanciero.com.ar/cotizaciones/";
 
 export enum TIPOS {
   OFICIAL = "Oficial",
@@ -21,7 +25,7 @@ export type Cotizacion = {
   moneda: string;
   tipo: TIPOS;
   fecha: Date;
-  compra: number;
+  compra?: number;
   venta: number;
-  EntidadId: string | number;
+  EntidadId: number;
 };

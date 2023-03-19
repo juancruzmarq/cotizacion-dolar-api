@@ -1,10 +1,5 @@
 import { Router } from "express";
 import {
-  createCotizacion,
-  getCotizacion,
-  getCotizaciones,
-} from "../controllers/cotizacion";
-import {
   createEntidad,
   deleteEntidad,
   getEntidad,

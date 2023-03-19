@@ -2,9 +2,8 @@ import express, { Application } from "express";
 import entidadesRouter from "../routes/entidad.router";
 import cotizacionesRouter from "../routes/cotizacion.router";
 import cors from "cors";
-import connection from "../database/connection";
-import Entidad from "./entidad";
-import Cotizacion from "./cotizacion";
+import prisma from "../database/connection";
+
 import { scrapping } from "../scrapping/scrapping";
 
 class Server {
@@ -39,16 +38,18 @@ class Server {
 
   async database() {
     try {
-      await Entidad.sync();
-      await Cotizacion.sync();
-      await connection.authenticate();
+      await prisma.$connect()
       console.log("Database online");
+      await prisma.$disconnect();
     } catch (error: any) {
       throw new Error(error);
     }
   }
 
   async scrap() {
+    // setInterval(async () => {
+    //   await scrapping();
+    // }, 60000); // 1 minuto
     await scrapping();
   }
 

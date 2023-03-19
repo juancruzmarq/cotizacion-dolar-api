@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import Cotizacion from "../models/cotizacion";
 import CotizacionService from "../services/cotizacion.service";
 
 const getCotizaciones = async (req: Request, res: Response) => {

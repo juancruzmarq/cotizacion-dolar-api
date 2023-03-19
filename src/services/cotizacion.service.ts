@@ -1,10 +1,10 @@
-import Cotizacion from "../models/cotizacion";
-import Entidad from "../models/entidad";
+import prisma from "../database/connection";
+import { ErrorService } from "./error.service";
 
 const CotizacionService = {
   getCotizaciones: async () => {
     try {
-      const cotizaciones = await Cotizacion.findAll();
+      const cotizaciones = await prisma.cotizacion.findMany();
       if (cotizaciones.length === 0) {
         return new Error("No existen cotizaciones");
       }
@@ -15,7 +15,11 @@ const CotizacionService = {
   },
   getCotizacion: async (id: number) => {
     try {
-      const cotizacion = await Cotizacion.findByPk(id);
+      const cotizacion = await prisma.cotizacion.findUnique({
+        where: {
+          id: id,
+        },
+      });
       if (!cotizacion) {
         return new Error(`No existe una cotizacion con el id ${id}`);
       }
@@ -24,21 +28,18 @@ const CotizacionService = {
       return new Error(`No existe una cotizacion con el id ${id}`);
     }
   },
-  createCotizacion: async (body: any, entidadName?: string) => {
+  createCotizacion: async (body: any) => {
     try {
-      if (entidadName) {
-        const entidad = await Entidad.findOne({
-          where: {
-            nombre: entidadName,
-          },
-        });
-        if (!entidad) {
-          return new Error(`No existe una entidad con el nombre ${entidadName}`);
-        }
-        body.EntidadId = entidad.getDataValue("id");
-      }
-      const cotizacion = Cotizacion.build(body);
-      await cotizacion.save();
+      const cotizacion = await prisma.cotizacion.create({
+        data: {
+          moneda: body.moneda,
+          tipo: body.tipo,
+          compra: body.compra,
+          venta: body.venta,
+          fecha: body.fecha,
+          EntidadId: body.EntidadId,
+        },
+      });
       return cotizacion;
     } catch (error: any) {
       return new Error(error);
@@ -46,13 +47,16 @@ const CotizacionService = {
   },
   getLastCotizacionByEntidad: async (id: number) => {
     try {
-      const cotizacion = await Cotizacion.findOne({
+      const cotizacion = await prisma.cotizacion.findFirst({
         where: {
-          entidadId: id,
+          EntidadId: id,
         },
-        order: [["createdAt", "DESC"]],
+        orderBy: {
+          createdAt: "desc",
+        },
       });
       if (!cotizacion) {
+        console.log("No existe una cotizacion para la entidad con el id " + id);
         return new Error(`No existe una cotizacion con el id ${id}`);
       }
       return cotizacion;
@@ -62,14 +66,16 @@ const CotizacionService = {
   },
   getCotizacionByEntidad: async (id: number) => {
     try {
-      const cotizacion = await Cotizacion.findAll({
+      const cotizacion = await prisma.cotizacion.findMany({
         where: {
           EntidadId: id,
         },
-        order: [["createdAt", "DESC"]],
-        limit: 1,
+        orderBy: {
+          createdAt: "desc",
+        },
       });
       if (cotizacion.length === 0) {
+        console.log("No existe una cotizacion para la entidad con el id " + id);
         return new Error(
           `No existe una cotizacion para la entidad con el id ${id}`
         );
