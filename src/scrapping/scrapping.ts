@@ -9,7 +9,7 @@ export const scrapping = async () => {
   const dolarHoy = await createCotizacionDolarHoy(browser);
   const laNacion = await createCotizacionLaNacion(browser);
 
-  if (bancoNacion && dolarHoy && laNacion) {
+  if (laNacion && dolarHoy && bancoNacion) {
     console.log("Se actualizaron todas las cotizaciones");
   } else {
     console.log("Algunas cotizaciones no se actualizaron");

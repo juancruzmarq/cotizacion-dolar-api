@@ -18,7 +18,10 @@ export enum TIPOS {
   SOLIDARIO = "Solidario",
   MAYORISTA = "Mayorista",
   MEP_CONTADO = "MEP Contado",
+  MEP = "MEP",
   TURISTA = "Turista",
+  TARJETA = "Tarjeta",
+  CCL = "CCL",
 }
 
 export type Cotizacion = {

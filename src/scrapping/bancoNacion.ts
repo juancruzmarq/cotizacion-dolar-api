@@ -5,7 +5,7 @@ import { ErrorService } from "../services/error.service";
 import EntidadService from "../services/entidad.service";
 import { Entidad } from "@prisma/client";
 
-export async function getOficial(
+async function getOficial(
   browser: Browser,
   id: number
 ): Promise<Cotizacion | Error> {
@@ -73,6 +73,7 @@ async function createOficial(
   }
   return true;
 }
+
 
 export async function createCotizacionBancoNacion(
   browser: Browser
