@@ -26,6 +26,7 @@ export enum TIPOS {
   AHORRO = "Ahorro",
   QATAR = "Qatar",
   COLDPLAY = "Coldplay",
+  FUTURO = "Futuro",
 }
 
 export type Cotizacion = {
