@@ -22,6 +22,10 @@ export enum TIPOS {
   TURISTA = "Turista",
   TARJETA = "Tarjeta",
   CCL = "CCL",
+  LUJO = "Lujo",
+  AHORRO = "Ahorro",
+  QATAR = "Qatar",
+  COLDPLAY = "Coldplay",
 }
 
 export type Cotizacion = {

@@ -35,7 +35,6 @@ model Entidad {
 model Error {
   id        Int       @id @default(autoincrement())
   file      String?   @db.VarChar(255)
-  line      Int?
   mensaje   String    @db.VarChar(255)
   moneda    String    @db.VarChar(255)
   tipo      String    @db.VarChar(255)
